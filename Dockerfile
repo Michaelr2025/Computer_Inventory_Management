@@ -1,11 +1,12 @@
-# שלב הבנייה
-FROM maven:3.9.9-openjdk-17 AS build
+# Build stage
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
-COPY . .
+COPY pom.xml .
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-# שלב הריצה
+# Run stage
 FROM openjdk:17
 WORKDIR /app
-COPY --from=build /app/target/Computer_Inventory_Management.jar .
-CMD ["java", "-jar", "Computer_Inventory_Management.jar"]
+COPY --from=build /app/target/*.jar app.jar
+CMD ["java", "-jar", "app.jar"]
